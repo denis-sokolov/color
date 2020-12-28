@@ -75,12 +75,16 @@ export function parse(rawInput: string): ParseOutput | "unparsable" {
       // Ignore, try other formats
     }
 
-  const hsl = input.match(
-    /^hsla? ?\( ?([0-9.]+) ?, ?([0-9.]+) ?% ?, ?([0-9.]+) ?%( ?, ?[0-9.]+%?)? ?\)$/
-  );
+  const hsl =
+    input.match(
+      /^hsla? ?\( ?([0-9.]+) ?, ?([0-9.]+) ?% ?, ?([0-9.]+) ?%( ?, ?[0-9.]+%?)? ?\)$/
+    ) ||
+    input.match(
+      /^hsla? ?\( ?([0-9.]+) ([0-9.]+) ?% ([0-9.]+) ?%( ?\/ ?[0-9.]+%?)? ?\)$/
+    );
   try {
     if (hsl) {
-      const o = (hsl[4] || "100%").replace(/,/g, "");
+      const o = (hsl[4] || "100%").replace(/[,/]/g, "");
       const opacity = o.endsWith("%")
         ? Number(o.replace(/%$/, "")) / 100
         : Number(o);
