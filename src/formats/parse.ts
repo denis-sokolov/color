@@ -7,10 +7,16 @@ export type ParseOutput =
   | { h: number; s: number; l: number; opacity: number };
 
 export function parse(rawInput: string): ParseOutput | "unparsable" {
-  const lch = rawInput
+  const input = rawInput
+    .replace(/\s+/g, " ")
+    .replace(/ ?; ?$/, "")
+    .trim()
+    .toLowerCase();
+
+  const lch = input
     .toLowerCase()
     .match(
-      /^\s*lch\s*\(\s*([0-9.]+)\s*%\s+([0-9.]+)\s+([0-9.]+)(\s+\/\s+([0-9.]+\s*%?))?\s*\)\s*$/
+      /^lch ?\( ?([0-9.]+) ?% ?([0-9.]+) ?([0-9.]+)( ?\/ ?([0-9.]+ ?%?))? ?\) ?$/
     );
 
   try {
@@ -30,9 +36,7 @@ export function parse(rawInput: string): ParseOutput | "unparsable" {
     // Ignore, try other formats
   }
 
-  const input = rawInput.replace(/[\s;]/g, "").toLowerCase();
-
-  const hexShort = input.match(/^#?\s*([a-f0-9]{3})([0-9a-f])?$/);
+  const hexShort = input.match(/^#? ?([a-f0-9]{3})([0-9a-f])?$/);
   if (hexShort) {
     return {
       r: parseInt(hexShort[1][0].repeat(2), 16),
@@ -42,7 +46,7 @@ export function parse(rawInput: string): ParseOutput | "unparsable" {
     };
   }
 
-  const hexLong = input.match(/^#?\s*([a-f0-9]{6})([0-9a-f]{2})?$/);
+  const hexLong = input.match(/^#? ?([a-f0-9]{6})([0-9a-f]{2})?$/);
   if (hexLong) {
     return {
       r: parseInt(hexLong[1].substr(0, 2), 16),
@@ -53,7 +57,7 @@ export function parse(rawInput: string): ParseOutput | "unparsable" {
   }
 
   const rgb = input.match(
-    /^rgba?\(([0-9.]+),([0-9.]+),([0-9.]+)(,[0-9.]+%?)?\)$/
+    /^rgba? ?\( ?([0-9.]+) ?, ?([0-9.]+) ?, ?([0-9.]+)( ?, ?[0-9.]+ ?%?)? ?\)$/
   );
   if (rgb)
     try {
@@ -72,7 +76,7 @@ export function parse(rawInput: string): ParseOutput | "unparsable" {
     }
 
   const hsl = input.match(
-    /^hsla?\(([0-9.]+),([0-9.]+)%,([0-9.]+)%(,[0-9.]+%?)?\)$/
+    /^hsla? ?\( ?([0-9.]+) ?, ?([0-9.]+) ?% ?, ?([0-9.]+) ?%( ?, ?[0-9.]+%?)? ?\)$/
   );
   try {
     if (hsl) {
@@ -91,10 +95,9 @@ export function parse(rawInput: string): ParseOutput | "unparsable" {
     // Ignore, try other formats
   }
 
-  if (rawInput.trim() === "transparent")
-    return { r: 0, g: 0, b: 0, opacity: 0 };
+  if (input === "transparent") return { r: 0, g: 0, b: 0, opacity: 0 };
 
-  const keyword = keyword2rgb(rawInput);
+  const keyword = keyword2rgb(input);
   if (keyword)
     return {
       r: keyword[0] * 2.55,
@@ -102,12 +105,6 @@ export function parse(rawInput: string): ParseOutput | "unparsable" {
       b: keyword[2] * 2.55,
       opacity: 1,
     };
-
-  const inputForRgbHsl = rawInput.replace(
-    /(\d%?)(?:\s+|\s*\/\s*)(\d)/g,
-    "$1,$2"
-  );
-  if (rawInput !== inputForRgbHsl) return parse(inputForRgbHsl);
 
   return "unparsable";
 }
