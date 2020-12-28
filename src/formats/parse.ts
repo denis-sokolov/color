@@ -56,12 +56,16 @@ export function parse(rawInput: string): ParseOutput | "unparsable" {
     };
   }
 
-  const rgb = input.match(
-    /^rgba? ?\( ?([0-9.]+) ?, ?([0-9.]+) ?, ?([0-9.]+)( ?, ?[0-9.]+ ?%?)? ?\)$/
-  );
+  const rgb =
+    input.match(
+      /^rgba? ?\( ?([0-9.]+) ?, ?([0-9.]+) ?, ?([0-9.]+)( ?, ?[0-9.]+ ?%?)? ?\)$/
+    ) ||
+    input.match(
+      /^rgba? ?\( ?([0-9.]+) ([0-9.]+) ([0-9.]+)( ?\/ ?[0-9.]+ ?%?)? ?\)$/
+    );
   if (rgb)
     try {
-      const o = (rgb[4] || "100%").replace(/,/g, "");
+      const o = (rgb[4] || "100%").replace(/[,/]/g, "");
       const opacity = o.endsWith("%")
         ? Number(o.replace(/%$/, "")) / 100
         : Number(o);
