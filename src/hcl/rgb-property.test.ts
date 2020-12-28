@@ -11,3 +11,10 @@ test("class exposes precise rgb for colors built from rgb", (t) => {
   const color = colorFromRgb(175, 135, 228);
   t.truthy(color.rgb.precise);
 });
+
+test.skip("rgb property keeps full precision when constructed from rgb", (t) => {
+  const color = colorFromRgb(175, 135, 228);
+  t.is(color.rgb.precise?.r, 175);
+  t.is(color.rgb.precise?.g, 135);
+  t.is(color.rgb.precise?.b, 228);
+});
