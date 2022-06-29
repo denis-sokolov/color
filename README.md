@@ -2,7 +2,7 @@
 
 Color manipulation for use in consistent design systems. Uses HCL color space for computation, but allows simple format input and output.
 
-Read the awesome Lea Verou’s [blog post about HCL colors](https://lea.verou.me/2020/04/lch-colors-in-css-what-why-and-how/).
+See also Lea Verou’s [Color.js](https://colorjs.io/) and the awesome [blog post about HCL colors](https://lea.verou.me/2020/04/lch-colors-in-css-what-why-and-how/).
 
 ```ts
 import { colorFromString } from "ui-colors";
