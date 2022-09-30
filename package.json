@@ -17,7 +17,7 @@
     "@csstools/convert-colors": "^2.0.0",
     "@types/d3-color": "^2.0.1",
     "color-blend": "^3.0.1",
-    "d3-color": "^2.0.0"
+    "d3-color": "^3.1.0"
   },
   "devDependencies": {
     "@theorem/eslint-plugin": "^6.2.1",
